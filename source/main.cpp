@@ -31,24 +31,8 @@ DEALINGS IN THE SOFTWARE.
 
 MicroBit uBit;
 WeatherService s(uBit.radio);
-
-
-void log_num_priv(int c)
-{
-    uBit.serial.printf("%s",c);
-}
-void log_string_priv(const char * c)
-{
-    uBit.serial.printf("%s",c);
-}
-void log_string(const char * c)
-{
-    uBit.serial.printf("%s",c);
-}
-void log_num(int c)
-{
-    uBit.serial.printf("%d\r\n",c);
-}
+CloudVariable* c;
+int i = 0;
 
 void send_get(MicroBitEvent)
 {
@@ -60,31 +44,6 @@ void send_post(MicroBitEvent)
     int ret = s.setRoomTemperature("C20",uBit.thermometer.getTemperature());
     uBit.display.scroll(ret);
 }
-
-// int main()
-// {
-//     // Initialise the micro:bit runtime.
-//     uBit.init();
-//     uBit.radio.enable();
-
-//     uBit.serial.printf("HELLO send");
-
-//     uBit.messageBus.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_CLICK, send_get);
-//     uBit.messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_CLICK, send_post);
-
-//     // if (t.getString().length() > 0)
-//     //     uBit.display.scroll(t.getString());
-//     // else
-//     //     uBit.display.scroll("no data");
-//     // If main exits, there may still be other fibers running or registered event handlers etc.
-//     // Simply release this fiber, which will mean we enter the scheduler. Worse case, we then
-//     // sit in the idle task forever, in a power efficient sleep.
-//     release_fiber();
-// }
-#include "CloudVariable.h"
-CloudVariable* c;
-
-int i = 0;
 
 void modify_cv(MicroBitEvent)
 {
@@ -103,6 +62,7 @@ int main()
     // Initialise the micro:bit runtime.
     uBit.init();
     uBit.radio.enable();
+
     uBit.display.print('A');
     uBit.serial.printf("HELLO send");
 
@@ -114,13 +74,6 @@ int main()
     uBit.messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_CLICK, send_get);
     uBit.messageBus.listen(RADIO_CLOUD_VARIABLE_ID, c->variableNameHash, scroll_var);
 
-    // if (t.getString().length() > 0)
-    //     uBit.display.scroll(t.getString());
-    // else
-    //     uBit.display.scroll("no data");
-    // If main exits, there may still be other fibers running or registered event handlers etc.
-    // Simply release this fiber, which will mean we enter the scheduler. Worse case, we then
-    // sit in the idle task forever, in a power efficient sleep.
     release_fiber();
 }
 
